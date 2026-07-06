@@ -12,8 +12,8 @@ build_and_push() {
     folder=$1
     basename=$(basename -- "$folder")
     name=${basename%.*}
-    docker build $folder -t $docker_username/dev-env-$name:latest
-    docker push $docker_username/dev-env-$name:latest
+    docker build "$folder" -t "${docker_username}/dev-env-${name}:latest"
+    docker push "${docker_username}/dev-env-${name}:latest"
 }
 
 build_and_push "images/base"

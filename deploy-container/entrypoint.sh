@@ -86,9 +86,11 @@ if [ -n "$DOTFILES_REPO" ]; then
     DOTFILES_SYMLINK="${DOTFILES_SYMLINK:-true}"
 
     # symlink repo to $HOME
-    if [ $DOTFILES_SYMLINK = "true" ]; then
+    if [[ "$DOTFILES_SYMLINK" = "true" ]]; then
         shopt -s dotglob
-        ln -sf "$HOME"/dotfiles/* "$HOME"
+        for file in "$HOME"/dotfiles/*; do
+            [ "$(basename "$file")" != ".git" ] && ln -sf "$file" "$HOME"
+        done
     fi
 
     # run install script, if it exists
