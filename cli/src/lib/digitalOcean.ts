@@ -13,6 +13,10 @@ export type Droplet = {
   status: "new" | "active";
 };
 
+const authHeaders = (token: string) => ({
+  Authorization: `Bearer ${token}`,
+});
+
 type CreateDropletOptions = {
   userData: string;
   token: string;
@@ -31,9 +35,7 @@ export const createDroplet = async ({
         image: "ubuntu-20-10-x64",
         user_data: userData,
       },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: authHeaders(token),
     })
     .json<{ droplet: Droplet }>()
     .then((data) => data.droplet);
@@ -46,9 +48,7 @@ type GetDropletOptions = {
 
 export const getDroplet = async ({ token, id }: GetDropletOptions) => {
   return got(`${DIGITALOCEAN_API_URL}/droplets/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: authHeaders(token),
   })
     .json<{ droplet: Droplet }>()
     .then((data) => data.droplet);

@@ -56,36 +56,26 @@ const handleErrorLog = (error: unknown) => {
 const oneMinute = 1000 * 60;
 const fiveMinutes = oneMinute * 5;
 
-const waitUntilBeActive = (droplet: Droplet, token: string) => {
+const waitForDroplet = (
+  droplet: Droplet,
+  token: string,
+  isReady: (droplet: Droplet) => boolean | Promise<boolean>,
+  timeout: number = fiveMinutes
+) => {
   return waitUntil(
-    async () => {
-      const dropletInfo = await getDroplet({ token, id: droplet.id });
-      return dropletInfo.status === "active";
-    },
-    { timeout: fiveMinutes, intervalBetweenAttempts: oneMinute / 2 }
+    async () => isReady(await getDroplet({ token, id: droplet.id })),
+    { timeout, intervalBetweenAttempts: oneMinute / 2 }
   );
 };
 
-const waitUntilHasPublicIp = (droplet: Droplet, token: string) => {
-  return waitUntil(
-    async () => {
-      const dropletInfo = await getDroplet({ token, id: droplet.id });
-      const ip = getPublicIp(dropletInfo);
-      return ip !== undefined;
-    },
-    { timeout: fiveMinutes, intervalBetweenAttempts: oneMinute / 2 }
-  );
-};
+const waitUntilBeActive = (droplet: Droplet, token: string) =>
+  waitForDroplet(droplet, token, (info) => info.status === "active");
 
-const waitUntilCodeServerIsLive = (droplet: Droplet, token: string) => {
-  return waitUntil(
-    async () => {
-      const dropletInfo = await getDroplet({ token, id: droplet.id });
-      return isCodeServerLive(dropletInfo);
-    },
-    { timeout: fiveMinutes * 2, intervalBetweenAttempts: oneMinute / 2 }
-  );
-};
+const waitUntilHasPublicIp = (droplet: Droplet, token: string) =>
+  waitForDroplet(droplet, token, (info) => getPublicIp(info) !== undefined);
+
+const waitUntilCodeServerIsLive = (droplet: Droplet, token: string) =>
+  waitForDroplet(droplet, token, isCodeServerLive, fiveMinutes * 2);
 
 export const deployDigitalOcean = async () => {
   let spinner: ora.Ora;
