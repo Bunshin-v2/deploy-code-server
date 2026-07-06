@@ -37,15 +37,17 @@ const isCodeServerLive = async (droplet: Droplet) => {
 
 const handleErrorLog = (error: unknown) => {
   if (isPermissionError(error)) {
-    console.log(
+    console.error(
       chalk.red(
         chalk.bold("Invalid token."),
         "Please, verify your token and try again."
       )
     );
   } else {
-    console.log(chalk.red.bold("Something wrong happened"));
-    console.log(
+    const message =
+      error instanceof Error ? error.message : "Unknown error occurred";
+    console.error(chalk.red.bold("Deployment failed:"), chalk.red(message));
+    console.error(
       chalk.red(
         "You may have to delete the droplet manually on your Digital Ocean dashboard."
       )
@@ -88,7 +90,7 @@ const waitUntilCodeServerIsLive = (droplet: Droplet, token: string) => {
 };
 
 export const deployDigitalOcean = async () => {
-  let spinner: ora.Ora;
+  let spinner: ora.Ora | undefined;
 
   console.log(
     chalk.blue(
@@ -101,7 +103,7 @@ export const deployDigitalOcean = async () => {
   ]);
 
   try {
-    let spinner = ora("Creating droplet and installing code-server").start();
+    spinner = ora("Creating droplet and installing code-server").start();
     let droplet = await createDroplet({
       userData: await getUserDataScript(),
       token,
@@ -132,7 +134,10 @@ export const deployDigitalOcean = async () => {
       )
     );
   } catch (error) {
-    spinner.stop();
+    if (spinner) {
+      spinner.stop();
+    }
     handleErrorLog(error);
+    process.exit(1);
   }
 };
