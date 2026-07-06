@@ -12,7 +12,7 @@ import waitUntil from "async-wait-until";
 
 const getUserDataScript = async () =>
   got(
-    "https://raw.githubusercontent.com/cdr/deploy-code-server/main/deploy-vm/launch-code-server.sh"
+    "https://raw.githubusercontent.com/coder/deploy-code-server/main/deploy-vm/launch-code-server.sh"
   ).text();
 
 const isPermissionError = (error: unknown) => {
@@ -101,7 +101,7 @@ export const deployDigitalOcean = async () => {
   ]);
 
   try {
-    let spinner = ora("Creating droplet and installing code-server").start();
+    spinner = ora("Creating droplet and installing code-server").start();
     let droplet = await createDroplet({
       userData: await getUserDataScript(),
       token,
@@ -132,7 +132,7 @@ export const deployDigitalOcean = async () => {
       )
     );
   } catch (error) {
-    spinner.stop();
+    spinner?.stop();
     handleErrorLog(error);
   }
 };

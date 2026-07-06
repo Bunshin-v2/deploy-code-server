@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This will build and push public images in the images/ folder to
 # DockerHub based on your Docker username with the
@@ -12,7 +12,7 @@ build_and_push() {
     folder=$1
     basename=$(basename -- "$folder")
     name=${basename%.*}
-    docker build $folder -t bencdr/dev-env-$name:latest
+    docker build $folder -t $docker_username/dev-env-$name:latest
     docker push $docker_username/dev-env-$name:latest
 }
 

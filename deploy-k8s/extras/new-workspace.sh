@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This creates a new workspace file and opens it in 
 # VS Code, if you have it installed
