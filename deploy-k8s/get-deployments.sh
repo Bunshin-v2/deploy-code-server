@@ -3,6 +3,8 @@
 # This will look in your workspaces/ folder and
 # look up the helm deployments in a basic manner
 
+. "$(dirname "$0")/lib.sh"
+
 get_deployment() {
     name=$1
     ip=$(kubectl get svc $name-dev-code-server -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -14,9 +16,4 @@ get_deployment() {
     echo "---"
 }
 
-
-for file in workspaces/*.yaml; do
-    basename=$(basename -- "$file")
-    name=${basename%.*}
-    get_deployment $name
-done
+for_each_workspace get_deployment

@@ -6,12 +6,13 @@
 
 set -e
 
+. "$(dirname "$0")/lib.sh"
+
 docker_username=$(docker-credential-$(jq -r .credsStore ~/.docker/config.json) list | jq -r '. | to_entries[] | select(.key | contains("docker.io")) | last(.value)')
 
 build_and_push() {
     folder=$1
-    basename=$(basename -- "$folder")
-    name=${basename%.*}
+    name=$(strip_name "$folder")
     docker build $folder -t bencdr/dev-env-$name:latest
     docker push $docker_username/dev-env-$name:latest
 }
