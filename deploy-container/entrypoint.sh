@@ -22,7 +22,7 @@ else
     echo "[$PREFIX] Copying rclone config..."
     mkdir -p /home/coder/.config/rclone/
     touch /home/coder/.config/rclone/rclone.conf
-    echo $RCLONE_DATA | base64 -d > /home/coder/.config/rclone/rclone.conf
+    printf '%s' "$RCLONE_DATA" | base64 -d > /home/coder/.config/rclone/rclone.conf
 
     # default to true
     RCLONE_VSCODE_TASKS="${RCLONE_VSCODE_TASKS:-true}"
@@ -47,7 +47,7 @@ else
     RCLONE_SOURCE_PATH=${RCLONE_SOURCE:-$START_DIR}
     echo "rclone sync $RCLONE_SOURCE_PATH $RCLONE_REMOTE_PATH $RCLONE_FLAGS -vv" > /home/coder/push_remote.sh
     echo "rclone sync $RCLONE_REMOTE_PATH $RCLONE_SOURCE_PATH $RCLONE_FLAGS -vv" > /home/coder/pull_remote.sh
-    chmod +x push_remote.sh pull_remote.sh
+    chmod +x /home/coder/push_remote.sh /home/coder/pull_remote.sh
 
     if rclone ls $RCLONE_REMOTE_PATH; then
 
@@ -83,12 +83,14 @@ if [ -n "$DOTFILES_REPO" ]; then
     mkdir -p $HOME/dotfiles
     git clone $DOTFILES_REPO $HOME/dotfiles
 
-    DOTFILES_SYMLINK="${RCLONE_AUTO_PULL:-true}"
+    DOTFILES_SYMLINK="${DOTFILES_SYMLINK:-true}"
 
     # symlink repo to $HOME
-    if [ $DOTFILES_SYMLINK = "true" ]; then
+    if [[ "$DOTFILES_SYMLINK" = "true" ]]; then
         shopt -s dotglob
-        ln -sf source_file $HOME/dotfiles/* $HOME
+        for file in "$HOME"/dotfiles/*; do
+            [ "$(basename "$file")" != ".git" ] && ln -sf "$file" "$HOME"
+        done
     fi
 
     # run install script, if it exists

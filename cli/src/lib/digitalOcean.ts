@@ -7,7 +7,7 @@ export type DropletV4Network = {
   type: "private" | "public";
 };
 export type Droplet = {
-  id: string;
+  id: number;
   name: string;
   networks: { v4: DropletV4Network[] };
   status: "new" | "active";
@@ -28,7 +28,7 @@ export const createDroplet = async ({
         name: "code-server",
         region: "nyc3",
         size: "s-1vcpu-1gb",
-        image: "ubuntu-20-10-x64",
+        image: "ubuntu-22-04-x64",
         user_data: userData,
       },
       headers: {
@@ -40,7 +40,7 @@ export const createDroplet = async ({
 };
 
 type GetDropletOptions = {
-  id: string;
+  id: number;
   token: string;
 };
 

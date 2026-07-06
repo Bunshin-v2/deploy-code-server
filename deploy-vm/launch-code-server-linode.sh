@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # allow us to access systemd logs to see the status of --link
 sed -i.bak 's/#Storage=auto/Storage=persistent/' /etc/systemd/journald.conf
