@@ -11,4 +11,7 @@ const main = async () => {
   process.exit(0);
 };
 
-main();
+main().catch((error) => {
+  console.error("Fatal error:", error instanceof Error ? error.message : error);
+  process.exit(1);
+});
