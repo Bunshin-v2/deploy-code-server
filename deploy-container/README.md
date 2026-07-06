@@ -16,7 +16,7 @@ docker run -p 127.0.0.1:8080:8080 \
   -v "$PWD/project:/home/coder/project" \
   -u "$(id -u):$(id -g)" \
   -e "DOCKER_USER=$USER" \
-  -e "PASSWORD=12345" \
+  -e "PASSWORD=yourStrongPasswordHere" \
   -it bencdr/code-server-deploy-container:latest
 ```
 

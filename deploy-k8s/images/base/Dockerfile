@@ -1,4 +1,4 @@
-FROM codercom/code-server:3.12.0
+FROM codercom/code-server:4.96.4
 
 # Install Homebrew, must be as a non-root user
 RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
