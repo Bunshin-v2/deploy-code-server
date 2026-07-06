@@ -10,23 +10,23 @@ import {
 } from "../lib/digitalOcean";
 import waitUntil from "async-wait-until";
 
-const getUserDataScript = async () =>
+export const getUserDataScript = async () =>
   got(
     "https://raw.githubusercontent.com/cdr/deploy-code-server/main/deploy-vm/launch-code-server.sh"
   ).text();
 
-const isPermissionError = (error: unknown) => {
+export const isPermissionError = (error: unknown) => {
   return error instanceof got.HTTPError && error.response.statusCode === 401;
 };
 
-const getPublicIp = (droplet: Droplet) => {
+export const getPublicIp = (droplet: Droplet) => {
   const network = droplet.networks.v4.find(
     (network) => network.type === "public"
   );
   return network?.ip_address;
 };
 
-const isCodeServerLive = async (droplet: Droplet) => {
+export const isCodeServerLive = async (droplet: Droplet) => {
   try {
     const response = await got(`http://${getPublicIp(droplet)}`, { retry: 0 });
     return response.statusCode === 200;
@@ -35,7 +35,7 @@ const isCodeServerLive = async (droplet: Droplet) => {
   }
 };
 
-const handleErrorLog = (error: unknown) => {
+export const handleErrorLog = (error: unknown) => {
   if (isPermissionError(error)) {
     console.log(
       chalk.red(
